@@ -1,0 +1,88 @@
+---
+title: "DDP_Week3_Assignment"
+author: "Marc Arroyo"
+date: "29/1/2021"
+output: ioslides_presentation
+---
+
+## Exercise
+
+### Instructions
+
+Create a web page presentation using R Markdown that features a plot created with Plotly. Host your webpage on either GitHub Pages, RPubs, or NeoCities. Your webpage must contain the date that you created the document, and it must contain a plot created with Plotly.
+
+### Review Criteria
+
+The rubric contains the following two questions:
+
+1. Does the web page feature a date and is this date less than two months before the date that you're grading this assignment?
+2. Is the web page a presentation and does it feature an interactive plot that appears to have been created with Plotly?
+
+## What we will do?
+
+Using the work done for the Course Project 2 of the course Statistical Inference of the Data Science Specialization, we will redo the boxplots done to show the effects of Dose on the tooth growth of 60 Guinea pigs. Data is contained in the *ToothGrowth* dataset, and information can be found on **[ETH Zürich](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html)**.
+
+We will use the data exploration we already done, but this time the boxplots will be done with plot.ly instead than ggplot2.
+
+## Environment Preparation
+
+First thing we will do is to load required libraries, set common chunk parameters and locale language to English, as mine it is not.
+
+```{r, EnvPrep, echo = TRUE, message = FALSE, warning = FALSE, error = FALSE, results='hide'}
+
+library(knitr)
+library(dplyr)
+library(plotly)
+
+opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, error = FALSE)
+
+Sys.setlocale("LC_ALL", "English")
+
+```
+
+## Loading and Exploring Data
+
+We pass all the dataset to a dataframe called df_tg, and applying a str() function we can observe 60 observations (one per pig in the study) and only 3 variables, len, a numeric identifying the tooth length change, supp, a factor identifying if the vitamin was supplied via orange juice or ascorbic acid,
+and dose, a numeric identifying the amount of vitamin supplied. 
+
+```{r, LoadData}
+df_tg <- ToothGrowth
+str(df_tg)
+```
+
+## Preparing data and creating Graphic
+
+As having the dose as a numeric will not be or great help, then we will add a column with the dose as a factor.
+
+```{r, PrepareData}
+df_tg <- df_tg %>% mutate(fdose = as.factor(dose))
+```
+
+And we will build our graphic with Plotly and put title and axis labels.
+
+```{r CreateGraph, eval = FALSE}
+
+b <- plot_ly(df_tg, y = ~len, color = ~fdose, type = "box")
+b <- b %>% layout(title = "Effect of Dose on Tooth Growth", 
+                  xaxis = list(title = "Dose", zeroline = TRUE,
+                               range = c(0,2.5)),
+                  yaxis = list(title = "Tooth length",range = c(0,35)))
+b
+
+```
+
+## Graphical Exploring
+
+And now, moving the cursor in the boxes we can see the values of each quantile.
+
+```{r GraphicalExploring, echo=FALSE}
+
+b <- plot_ly(df_tg, y = ~len, color = ~fdose, type = "box")
+b <- b %>% layout(title = "Effect of Dose on Tooth Growth", 
+                  xaxis = list(title = "Dose", zeroline = TRUE,
+                               range = c(0,2.5)),
+                  yaxis = list(title = "Tooth length",range = c(0,35)))
+b
+
+```
+
